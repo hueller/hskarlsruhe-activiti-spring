@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="twitterProcess" name="process1">
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <serviceTask id="retweet" name="Retweet" activiti:expression="#{retweetTask.execute(twitterMessage.id)}"></serviceTask>
+    <sequenceFlow id="flow1" name="" sourceRef="startevent1" targetRef="approveRetweet"></sequenceFlow>
+    <sequenceFlow id="flow2" name="" sourceRef="retweet" targetRef="endevent1"></sequenceFlow>
+    <userTask id="approveRetweet" name="Approve Retweet" activiti:assignee="kermit">
+      <documentation>Retweet "#{twitterMessage.text}"</documentation>
+      <extensionElements>
+        <activiti:formProperty id="approveRetweetChoice" name="Retweet bestätigen?" type="boolean" required="true" readable="true" writable="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway" default="retweetApprovedFalse"></exclusiveGateway>
+    <sequenceFlow id="flow3" name="" sourceRef="approveRetweet" targetRef="exclusivegateway1"></sequenceFlow>
+    <sequenceFlow id="retweetApprovedTrue" name="" sourceRef="exclusivegateway1" targetRef="retweet">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[#{approveRetweetChoice}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="retweetApprovedFalse" name="" sourceRef="exclusivegateway1" targetRef="endevent1"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_twitterProcess">
+    <bpmndi:BPMNPlane bpmnElement="twitterProcess" id="BPMNPlane_twitterProcess">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35" width="35" x="40" y="210"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35" width="35" x="630" y="210"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="retweet" id="BPMNShape_retweet">
+        <omgdc:Bounds height="55" width="105" x="440" y="110"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="approveRetweet" id="BPMNShape_approveRetweet">
+        <omgdc:Bounds height="55" width="105" x="160" y="200"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40" width="40" x="330" y="207"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="75" y="227"></omgdi:waypoint>
+        <omgdi:waypoint x="160" y="227"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="545" y="137"></omgdi:waypoint>
+        <omgdi:waypoint x="647" y="137"></omgdi:waypoint>
+        <omgdi:waypoint x="647" y="210"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="265" y="227"></omgdi:waypoint>
+        <omgdi:waypoint x="330" y="227"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="retweetApprovedTrue" id="BPMNEdge_retweetApprovedTrue">
+        <omgdi:waypoint x="350" y="207"></omgdi:waypoint>
+        <omgdi:waypoint x="350" y="137"></omgdi:waypoint>
+        <omgdi:waypoint x="440" y="137"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="retweetApprovedFalse" id="BPMNEdge_retweetApprovedFalse">
+        <omgdi:waypoint x="370" y="227"></omgdi:waypoint>
+        <omgdi:waypoint x="630" y="227"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
